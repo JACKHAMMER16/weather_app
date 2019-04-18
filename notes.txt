@@ -1,0 +1,177 @@
+
+Javascript Refresher
+--------------------------------------------------------------------------------------
+
+1) Let & Const
+    let     for variables 
+    const   for constants
+
+2) Arrow Function
+    const cat = () => {
+
+    };
+
+3) Properties
+    const person = {
+        name: "Harsha",
+        age: 29,
+        greet() {
+            console.log(`Welcome, ${this.name}`);
+        }
+    };
+    person.greet();
+
+4) Arrays
+
+    //forEach
+    const hobbies = ["Sports", "Cooking"];    
+    hobbies.forEach(item => {
+        console.log(item);
+    });
+
+    //Map 
+    hobbies.map(item => {
+        console.log(item + " 100");
+    });
+
+    //Ref Types  (Arrays and Objects are Refrence Types)
+    hobbies.push("New Additions");
+
+    //Copy Array
+    const copied = hobbies.slice();
+
+    //Spread Operator
+    const newArray = [...hobbies, "Here we go", "New types"];
+
+    //Rest Operator
+    const toArray = (...args) => [...args];
+    console.log(toArray(1, 2, 3, 4));
+
+5) Promises
+
+    const fetchData = () => {
+        const promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve("Done..!"), 2000);
+        });
+        return promise;
+    };
+
+    fetchData().then(() => console.log("Time is Up..!"));
+
+
+
+Nodejs Basics
+--------------------------------------------------------------------------------------
+
+Node Row Server
+---------------
+
+const http = require("http");
+const fs = require("fs");
+
+http
+  .createServer((req, res) => {
+    //console.log(req.url, req.method, req.headers);
+    //process.exit();
+
+    res.setHeader("Content-Type", "text/html");
+
+    let url = req.url;
+    let method = req.method;
+
+    if (method === "GET") {
+      if (url === "/") {
+        res.write(
+          "<h1>Home Page..! <a href='/about'> About Page </a> <a href='/message'> Message Page </a></h1>"
+        );
+      } else if (url === "/about") {
+        res.write("<h1> About Page..! <a href='/'> Home Page </a></h1>");
+      } else if (url === "/message") {
+        res.write(
+          "<h1> Message Page..! <a href='/'> Home Page </a>  <a href='/about'> About Page </a></h1>"
+        );
+        res.write("<form action='/message' method='post'>");
+        res.write("Enter Message : <input type='text' name='message'/>");
+        res.write(" <input type='submit'/>");
+        res.write("</form>");
+      } else {
+        res.write("<h1> Page Not Found..!</h1>");
+      }
+    }
+
+    if (method === "POST" && url === "/message") {
+      const body = [];
+      req.on("data", chunk => {
+        body.push(chunk);
+      });
+
+      req.on("end", () => {
+        const parsedBody = Buffer.concat(body).toString();
+        const message = parsedBody.split("=")[1];
+        fs.writeFileSync("message.txt", message);
+      });
+
+      res.statusCode = 302;
+      res.setHeader("Location", "/");
+      return res.end();
+    }
+
+    return res.end();
+  })
+  .listen(3000);
+
+
+
+Yargs
+----------------------------------------------------------------------------------
+
+yargs.command({
+  command: "add",
+  describe: chalk.red.inverse.bold("--> Error :  "),
+  handler: argv => {
+    console.log(chalk.green.inverse.bold("--------Your note Added..!--------"));
+    console.log("Title : ", argv.title);
+    console.log("Body : ", argv.body);
+    console.log(chalk.green.inverse.bold("----------------------------------"));
+  },
+  builder: {
+    title: {
+      describe: chalk.red.inverse("Enter note title"),
+      demandOption: true,
+      type: String
+    },
+    body: {
+      describe: chalk.red.inverse("Enter note body"),
+      demandOption: true,
+      type: String
+    }
+  }
+});
+
+yargs.command({
+  command: "remove",
+  describe: "Removing the note",
+  handler: () => {
+    console.log("Removing the note");
+  }
+});
+
+yargs.parse();
+
+console.log(yargs.argv);
+
+
+
+//Files
+-------------------------------------------------------------------------
+
+const data = fs.readFileSync("data.json").toString();
+let dataJSON = JSON.parse(data);
+
+dataJSON.name = "Sharath K";
+dataJSON.age = "28";
+dataJSON.email = "sharath@gmail.com";
+
+fs.writeFileSync("data.json", JSON.stringify(dataJSON));
+
+

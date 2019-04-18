@@ -1,0 +1,26 @@
+{{>header}}
+
+<h1>{{title}}</h1>
+<p>Created By : {{name}}</p>
+<center><img src="/img/weather.png" alt=""></center>
+{{>navbar}}
+
+<br>
+
+<center class='error'></center>
+
+<center class='data'>
+    <h3>Forecast : <span id='forecast'></span></h3>
+    <p>Location : <span id='location'></span></p>
+    <p>Address : <span id='add'></span></p>
+</center>
+
+
+<br>
+<center>
+
+    Enter Address : <input type="text" id='address'> <button id='submit'>Submit</button>
+
+</center>
+
+{{>footer}}
